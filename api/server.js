@@ -4,6 +4,7 @@ const express = require('express');
 const passport = require('passport');
 const session = require('express-session');
 const { Octokit } = require('octokit')
+const cors = require('cors');
 
 const app = express();
 
