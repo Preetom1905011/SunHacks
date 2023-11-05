@@ -1,142 +1,25 @@
 require('dotenv').config();
+const app = require('./app');
 
-const express = require('express');
-const passport = require('passport');
-const session = require('express-session');
-const { Octokit } = require('@octokit/rest')
-const { Webhooks } = require("@octokit/webhooks");
+if (process.env.BACKEND_URL != 'http://127.0.0.1') {
+    require("greenlock-express")
+        .init({
+            packageRoot: __dirname,
+            configDir: "./greenlock.d",
+    
+            // contact for security and critical bug notices
+            maintainerEmail: "rtwoo@asu.edu",
+    
+            // whether or not to run at cloudscale
+            cluster: false
+        })
+        // Serves on 80 and 443
+        // Get's SSL certificates magically!
+        .serve(app);
+} else {
+    const PORT = 8080;
 
-
-const app = express();
-
-var GitHubStrategy = require('passport-github').Strategy;
-
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
-
-passport.deserializeUser((obj, done) => {
-  done(null, obj);
-});
-
-passport.use(new GitHubStrategy({
-  clientID: process.env.GITHUB_CLIENT_ID,
-  clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  callbackURL: "http://127.0.0.1:5000/auth/github/callback"
-},
-(accessToken, refreshToken, profile, done) => {
-  profile.accessToken = accessToken;  // Store the access token
-  return done(null, profile);
+    app.listen(PORT, () => {
+        console.log(`App listening on http://localhost:${PORT}`);
+    });
 }
-));
-
-// Set up session management using the secret from the .env file
-app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
-
-// Initialize Passport
-app.use(passport.initialize());
-app.use(passport.session());
-
-function getOctokit(req) {
-  return new Octokit({
-    auth: req.user.accessToken,
-  });
-}
-app.get('/get-username', (req, res) => {
-  const octokit = getOctokit(req);
-
-  octokit.rest.users.getAuthenticated()
-    .then(response => {
-      res.send(`Your GitHub username is ${response.data.login}`);
-    })
-    .catch(error => {
-      console.error(error);
-      res.status(500).send('Failed to retrieve GitHub username');
-    });
-});
-
-app.get('/make-test-issue', (req, res) => {
-  const octokit = getOctokit(req);
-
-  octokit.rest.issues.create({
-    owner: "rtwoo",
-    repo: "soda-roster-approval",
-    title: "Hello from Backend"
-  }).then(response => {
-    res.send(response);
-  });
-});
-
-app.get('/auth/github',
-  passport.authenticate('github', { scope: [ 'repo' ] }));
-
-app.get('/auth/github/callback', 
-  passport.authenticate('github', { failureRedirect: '/login' }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('/get-username');
-  });
-
-async function handleUserFlow(req, res) {
-  const webhooks = new Webhooks({
-    secret: process.env.WEBHOOK_SECRET,
-  });
-  if (!req.isAuthenticated()) {
-    return res.status(403).send('Not authenticated');
-  }
-
-  const octokit = getOctokit(req);
-  const owner = req.user.username;
-
-  try {
-    // Create repository
-    const createRepoResponse = await octokit.rest.repos.createForAuthenticatedUser({
-      name: 'test-repo',
-    });
-    const repo = createRepoResponse.data.name;
-
-    // Create webhook
-    const createWebhookResponse = await octokit.rest.repos.createWebhook({
-      owner,
-      repo,
-      config: {
-        url: 'https://13.56.80.187:5000/webhook',
-        content_type: 'json',
-        secret: process.env.WEBHOOK_SECRET,
-      },
-      events: ['push', 'pull_request'],
-    });
-    const webhookId = createWebhookResponse.data.id;
-
-    // Respond to push and pull_request webhook events
-    webhooks.on("push", ({ id, name, payload }) => {
-      console.log(`Push event received for ${payload.repository.url} to ${payload.ref}`);
-      // Your code to handle push events
-    });
-
-    webhooks.on("pull_request", ({ id, name, payload }) => {
-      console.log(`Pull_request event received for ${payload.repository.url}`);
-      // Your code to handle pull_request events
-    });
-
-    // Delete repository (for simplicity, deleting after a delay of 5 minutes)
-    setTimeout(async () => {
-      await octokit.rest.repos.delete({
-        owner,
-        repo,
-      });
-      console.log('Repository deleted');
-    }, 300000);
-
-    res.send('Repository and webhook created, webhook is active, repository will be deleted after 5 minutes');
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('An error occurred');
-  }
-}
-
-app.get('/handle-user-flow', handleUserFlow);
-
-app.listen(5000, () => {
-    console.log('App listening on http://localhost:5000');
-});
