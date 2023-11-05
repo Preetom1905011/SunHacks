@@ -3,7 +3,7 @@ const passport = require('passport');
 const session = require('express-session');
 const { Octokit } = require('@octokit/rest')
 const { Webhooks } = require("@octokit/webhooks");
-const bodyParser = require('body-parser');
+const { createNodeMiddleware } = require("@octokit/webhooks");
 const cors = require('cors');
 
 const app = express();
@@ -19,7 +19,7 @@ passport.deserializeUser((obj, done) => {
 });
 
 const corsOptions = {
-  origin: 'http://localhost:3000',  // replace with your frontend application's URL
+  origin: 'http://localhost:3000', 
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 204,
@@ -30,10 +30,10 @@ app.use(cors(corsOptions));
 passport.use(new GitHubStrategy({
   clientID: process.env.GITHUB_CLIENT_ID,
   clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  callbackURL: `${process.env.BACKEND_URL}:${process.env.PORT}/auth/github/callback`
+  callbackURL: `${process.env.BACKEND_URL}/auth/github/callback`
 },
 (accessToken, refreshToken, profile, done) => {
-  profile.accessToken = accessToken;  // Store the access token
+  profile.accessToken = accessToken; 
   return done(null, profile);
 }
 ));
@@ -77,7 +77,7 @@ app.get('/make-test-issue', (req, res) => {
 });
 
 app.get('/auth/github',
-  passport.authenticate('github', { scope: [ 'repo' ] }));
+  passport.authenticate('github', { scope: [ 'repo', 'delete_repo' ] }));
 
 app.get('/auth/github/callback', 
   passport.authenticate('github', { failureRedirect: '/login' }),
@@ -85,11 +85,11 @@ app.get('/auth/github/callback',
     // Successful authentication, redirect home.
     res.redirect('/get-username');
   });
-  
+
+const webhooks = new Webhooks({
+  secret: process.env.WEBHOOK_SECRET,
+});
 async function handleUserFlow(req, res) {
-  const webhooks = new Webhooks({
-    secret: process.env.WEBHOOK_SECRET,
-  });
   if (!req.isAuthenticated()) {
     return res.status(403).send('Not authenticated');
   }
@@ -109,7 +109,7 @@ async function handleUserFlow(req, res) {
       owner,
       repo,
       config: {
-        url: 'https://13.56.80.187:5000/webhook',
+        url: `${process.env.BACKEND_URL}/webhook`,
         content_type: 'json',
         secret: process.env.WEBHOOK_SECRET,
       },
@@ -144,9 +144,7 @@ async function handleUserFlow(req, res) {
   }
 }
 
-// app.use(bodyParser.json());
-// app.use(webhooks.middleware);
-
+app.use(createNodeMiddleware(webhooks, { path: '/webhook' }));
 app.get('/handle-user-flow', handleUserFlow);
 
 module.exports = app;
