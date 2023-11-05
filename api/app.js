@@ -1,7 +1,7 @@
 const express = require('express');
 const passport = require('passport');
 const session = require('express-session');
-const { Octokit } = require('octokit');
+const { Octokit } = require('octokit')
 const cors = require('cors');
 
 const app = express();
@@ -24,33 +24,36 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
-app.use(passport.initialize());
-app.use(passport.session());
 
 passport.use(new GitHubStrategy({
   clientID: process.env.GITHUB_CLIENT_ID,
   clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  callbackURL: "https://learngit.courses/auth/github/callback"
+  callbackURL: process.env.BACKEND_URL +"/auth/github/callback"
 },
 (accessToken, refreshToken, profile, done) => {
-  profile.accessToken = accessToken;
+  profile.accessToken = accessToken;  // Store the access token
   return done(null, profile);
 }
 ));
+
+// Set up session management using the secret from the .env file
+app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 function getOctokit(req) {
   return new Octokit({
     auth: req.user.accessToken,
   });
 }
-
 app.get('/get-username', (req, res) => {
   const octokit = getOctokit(req);
 
   octokit.rest.users.getAuthenticated()
     .then(response => {
-      console.log("userName sent");
+      console.log("userName sent")
       res.send(`Your GitHub username is ${response.data.login}`);
     })
     .catch(error => {
@@ -77,6 +80,7 @@ app.get('/auth/github',
 app.get('/auth/github/callback', 
   passport.authenticate('github', { failureRedirect: '/login' }),
   function(req, res) {
+    // Successful authentication, redirect home.
     res.redirect('/get-username');
   });
 
