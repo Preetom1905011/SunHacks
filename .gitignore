@@ -1,3 +1,4 @@
 .DS_Store
 api/node_modules/
 sunhacks/node_modules/
+api/.env
