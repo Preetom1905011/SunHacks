@@ -1,7 +1,7 @@
 require('dotenv').config();
 const app = require('./app');
 
-if (process.env.BACKEND_URL != 'http://127.0.0.1') {
+if (process.env.BACKEND_URL != 'http://localhost') {
     require("greenlock-express")
         .init({
             packageRoot: __dirname,
@@ -17,9 +17,7 @@ if (process.env.BACKEND_URL != 'http://127.0.0.1') {
         // Get's SSL certificates magically!
         .serve(app);
 } else {
-    const PORT = 8080;
-
-    app.listen(PORT, () => {
-        console.log(`App listening on http://localhost:${PORT}`);
+    app.listen(process.env.PORT, () => {
+        console.log(`App listening on ${process.env.BACKEND_URL}:${process.env.PORT}`);
     });
 }
