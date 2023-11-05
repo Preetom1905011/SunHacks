@@ -28,7 +28,7 @@ app.use(cors(corsOptions));
 passport.use(new GitHubStrategy({
   clientID: process.env.GITHUB_CLIENT_ID,
   clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  callbackURL: process.env.BACKEND_URL +"/auth/github/callback"
+  callbackURL: `${process.env.BACKEND_URL}:${process.env.PORT}/auth/github/callback`
 },
 (accessToken, refreshToken, profile, done) => {
   profile.accessToken = accessToken;  // Store the access token
