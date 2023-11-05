@@ -3,9 +3,9 @@ import "../styles/login.scss";
 
 export default function Login() {
 
-  const handleOAuth = async () => {
+  const handleOAuth = () => {
     console.log("Sent request")
-    window.location.href = 'http://learngit.courses/auth/github';
+    window.location.href = 'http://localhost:8080/auth/github';
   }
 
   return (

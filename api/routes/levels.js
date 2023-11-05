@@ -34,12 +34,14 @@ const levels = {
 
 router.get('/', async (req, res) => {
   console.log(">>>>", levels)
-  res.send(levels)
+  res.json(levels)
 })
 
 router.get('/create-codespace', (req, res) => {
   
-  const octokit = getOctokit(req);
+  const octokit = new Octokit({
+    auth: req.user.accessToken,
+  });;
 
   const { query } = req
 
@@ -51,7 +53,7 @@ router.get('/create-codespace', (req, res) => {
   octokit.rest.codespaces.createWithRepoForAuthenticatedUser(
     levels[query.level].template
   ).then(response => {
-    res.send(response.data.web_url)
+    res.json(response.data.web_url)
   })
 });
 

@@ -9,31 +9,29 @@ export default function Levels() {
   const [easyExpanded, setEasyExpanded] = useState(false);
   const [intermediateExpanded, setIntermediateExpanded] = useState(false);
   const [hardExpanded, setHardExpanded] = useState(false);
-  const [levels, setLevels] = useState([1,2,3]);
+  const [levels, setLevels] = useState(null);
 
   useEffect(() => {
     // Fetch the userName from the session
     const urlParams = new URLSearchParams(window.location.search);
-    setUserName(urlParams.get('username'))
-
+    setUserName(urlParams.get("username"));
     const fetchLevels = async () => {
-      await fetch('https://learngit.courses/levels/')
-      .then(response => {
+      try {
+        const response = await fetch("http://localhost:8080/levels/");
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
+        console.log("Test>>>>>>")
+        const data = await response.json(); // Await the JSON parsing
+        console.log("Data from the response:", data);
+        setLevels(data);
 
-        console.log("==>", response); // You may need to use .text() or another method depending on the response content.
-      })
-      .then(data => {
-        // Handle the data from the response here
-        console.log("=========>",data);
-      })
-      .catch(error => {
+        // Now you can work with the 'data' object
+      } catch (error) {
         // Handle errors here
-        console.error('Fetch error:', error);
-      });
-    }
+        console.error("Fetch error:", error);
+      }
+    };
     fetchLevels();
   }, []);
 
@@ -59,12 +57,11 @@ export default function Levels() {
         break;
     }
   };
-  return (
-    ( userName?
+  return userName ? (
     <div className="levels">
       <header className="header">
         <Link className="login-button top-right links" to="/">
-        {userName} Log out
+          {userName} Log out
         </Link>
       </header>
       <h1>Welcome to GitLearning</h1>
@@ -78,16 +75,25 @@ export default function Levels() {
         </button>
         {easyExpanded && (
           <div className="level-list">
-            {levels.map((level) => (
-              <Link
-                key={level}
-                to={"/codespace"}
-                state={{ id: level, diff: "Easy", userName: userName}}
-                className="level links"
-              >
-                Level {level}
-              </Link>
-            ))}
+            {Object.keys(levels).map((level) => {
+              const { difficulty, template } = levels[level];
+              return (
+                <Link
+                  key={level}
+                  to="/codespace"
+                  state={{
+                    level_id: level,
+                    diff: difficulty,
+                    userName: userName,
+                    owner: template.owner,
+                    repo: template.repo,
+                  }}
+                  className="level links"
+                >
+                  {level}
+                </Link>
+              );
+            })}
           </div>
         )}
 
@@ -100,16 +106,25 @@ export default function Levels() {
         </button>
         {intermediateExpanded && (
           <div className="level-list">
-            {levels.map((level) => (
-              <Link
-                key={level}
-                to={"/codespace"}
-                state={{ id: level, diff: "Intermediate", userName: userName }}
-                className="level links"
-              >
-                Level {level}
-              </Link>
-            ))}
+            {Object.keys(levels).map((level) => {
+              const { difficulty, template } = levels[level];
+              return (
+                <Link
+                  key={level}
+                  to="/codespace"
+                  state={{
+                    level_id: level,
+                    diff: difficulty,
+                    userName: userName,
+                    owner: template.owner,
+                    repo: template.repo,
+                  }}
+                  className="level links"
+                >
+                  {level}
+                </Link>
+              );
+            })}
           </div>
         )}
 
@@ -122,21 +137,30 @@ export default function Levels() {
         </button>
         {hardExpanded && (
           <div className="level-list">
-            {levels.map((level) => (
-              <Link
-                key={level}
-                to={"/codespace"}
-                state={{ id: level, diff: "Hard", userName: userName}}
-                className="level links"
-              >
-                Level {level}
-              </Link>
-            ))}
+            {Object.keys(levels).map((level) => {
+              const { difficulty, template } = levels[level];
+              return (
+                <Link
+                  key={level}
+                  to="/codespace"
+                  state={{
+                    level_id: level,
+                    diff: difficulty,
+                    userName: userName,
+                    owner: template.owner,
+                    repo: template.repo,
+                  }}
+                  className="level links"
+                >
+                  {level}
+                </Link>
+              );
+            })}
           </div>
         )}
       </main>
     </div>
-    : <div className="error">Session Expired</div>
-    )
+  ) : (
+    <div className="error">Session Expired</div>
   );
 }

@@ -51,6 +51,7 @@ const webhook = require('./routes/webhook')
 
 app.use('/auth', auth);
 app.use('/levels', levels);
+
 app.use('/webhook', webhook);
 app.use(createNodeMiddleware(webhooks, { path: '/webhook' }));
 
@@ -58,7 +59,7 @@ const { Octokit } = require('@octokit/rest')
 app.use('/', (req, res) => {
   
   if (req.user == undefined)
-    res.send('Not logged in')
+    res.json('Not logged in')
 
   const octokit = new Octokit({
     auth: req.user.accessToken,
