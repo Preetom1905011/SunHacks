@@ -11,6 +11,9 @@ export default function Codespace() {
             <h1>{diff}: Level {id}</h1>
             <Link to={`/levels/login-success?username=${userName}`} className='login-button links back-bt'>Back</Link>
         </div>
+        <div className='codespace-view'>
+            <iframe src="https://www.merriam-webster.com/" className='embed'></iframe>
+        </div>
     </div>
   )
 }

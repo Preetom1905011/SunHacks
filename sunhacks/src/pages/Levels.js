@@ -15,7 +15,6 @@ export default function Levels() {
     // Fetch the userName from the session
     const urlParams = new URLSearchParams(window.location.search);
     setUserName(urlParams.get('username'))
-    console.log(urlParams.get('username'))
   }, []);
 
   // Function to handle expanding/collapsing a section
