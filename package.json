@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Preetom1905011/SunHacks/issues"
   },
-  "homepage": "https://github.com/Preetom1905011/SunHacks#readme"
+  "homepage": "https://github.com/Preetom1905011/SunHacks#readme",
+  "dependencies": {
+    "cors": "^2.8.5"
+  }
 }
