@@ -7,8 +7,11 @@ router.get('/github',
 
 router.get('/github/callback', 
   passport.authenticate('github', {
-    successRedirect: '../../',
-    failureRedirect: '/error' })
+    failureRedirect: '/error' }),
+    function (req, res) {
+      const username = req.user.username;
+      res.redirect(`http://localhost:3000/levels/login-success?username=${username}`)
+    }
 );
 
 module.exports = router

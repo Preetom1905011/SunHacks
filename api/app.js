@@ -63,7 +63,7 @@ app.use('/levels', levels);
 app.use('/webhook', webhook)
 app.use(createNodeMiddleware(webhooks, { path: '/webhook' }));
 
-const { Octokit } = require('octokit')
+const { Octokit } = require('@octokit/rest')
 app.use('/', (req, res) => {
   
   if (req.user == undefined)
