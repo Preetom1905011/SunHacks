@@ -3,6 +3,7 @@ const passport = require('passport');
 const session = require('express-session');
 const { Octokit } = require('@octokit/rest')
 const { Webhooks } = require("@octokit/webhooks");
+const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const app = express();
@@ -143,8 +144,8 @@ async function handleUserFlow(req, res) {
   }
 }
 
-app.use(bodyParser.json());
-app.use(webhooks.middleware);
+// app.use(bodyParser.json());
+// app.use(webhooks.middleware);
 
 app.get('/handle-user-flow', handleUserFlow);
 
