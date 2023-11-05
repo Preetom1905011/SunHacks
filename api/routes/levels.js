@@ -8,18 +8,25 @@ function getOctokit(req) {
   });
 }
 
-router.get('/get-username', (req, res) => {
-    const octokit = getOctokit(req);
-  
-    octokit.rest.users.getAuthenticated()
-      .then(response => {
-        console.log("userName sent")
-        res.send(`Your GitHub username is ${response.data.login}`);
-      })
-      .catch(error => {
-        console.error(error);
-        res.status(500).send('Failed to retrieve GitHub username');
-      });
+router.get('/create-codespace', (req, res) => {
+  const octokit = getOctokit(req);
+
+  octokit.rest.codespaces.createWithRepoForAuthenticatedUser({
+    owner: 'rtwoo',
+    repo: 'soda-roster-approval'
+  }).then(response => {
+    res.redirect(response.data.web_url)
+  })
+
+  // octokit.rest.users.getAuthenticated()
+  //   .then(response => {
+  //     console.log("userName sent")
+  //     res.send(`Your GitHub username is ${response.data.login}`);
+  //   })
+  //   .catch(error => {
+  //     console.error(error);
+  //     res.status(500).send('Failed to retrieve GitHub username');
+  // });
 });
 
 router.get('/make-test-issue', (req, res) => {

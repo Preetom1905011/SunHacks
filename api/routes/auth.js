@@ -3,11 +3,11 @@ const router = express.Router()
 const passport = require('passport');
 
 router.get('/github',
-  passport.authenticate('github', { scope: [ 'repo', 'delete-repo' ] }));
+  passport.authenticate('github', { scope: [ 'repo', 'delete-repo', 'codespace' ] }));
 
 router.get('/github/callback', 
   passport.authenticate('github', {
-    successRedirect: '../../levels/get-username',
+    successRedirect: '../../levels/create-codespace',
     failureRedirect: '/error' })
 );
 
