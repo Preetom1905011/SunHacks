@@ -7,7 +7,7 @@ router.get('/github',
 
 router.get('/github/callback', 
   passport.authenticate('github', {
-    successRedirect: '../../levels/create-codespace',
+    successRedirect: '../../',
     failureRedirect: '/error' })
 );
 

@@ -48,4 +48,25 @@ const levels = require('./routes/levels')
 app.use('/auth', auth);
 app.use('/levels', levels);
 
+const { Octokit } = require('octokit')
+app.use('/', (req, res) => {
+  
+  if (req.user == undefined)
+    res.send('Not logged in')
+
+  const octokit = new Octokit({
+    auth: req.user.accessToken,
+  });
+  
+  octokit.rest.users.getAuthenticated()
+  .then(response => {
+    console.log("userName sent")
+    res.send(`Your GitHub username is ${response.data.login}`);
+  })
+  .catch(error => {
+      console.error(error);
+      res.status(500).send('Failed to retrieve GitHub username');
+  });
+})
+
 module.exports = app;
