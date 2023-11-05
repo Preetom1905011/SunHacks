@@ -11,7 +11,9 @@ export default function Codespace() {
     useEffect(() => {
       const generateCodespace = async () => {
         try {
-          const response = await fetch(`http://localhost:8080/levels/create-codespace/query?level=${level_id}`);
+          const response = await fetch(`http://localhost:8080/levels/create-codespace?level=${level_id}`, {
+            credentials: 'include'
+          });
           if (!response.ok) {
             throw new Error("Network response was not ok");
           }
