@@ -1,0 +1,77 @@
+$bg-color: #433b7a;
+$level-list-color: #e3fc65;
+$level-list-expand: #cff707;
+$font-color: #f5f5f5;
+
+.levels {
+  background-color: $bg-color;
+  color: $font-color;
+  text-align: center;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  h1 {
+    margin: 2rem;
+    font-size: 36px;
+  }
+}
+
+.top-right {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-weight: bold;
+    padding: 10px 20px;
+}
+
+.main-content {
+  width: 10rem;
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+
+}
+
+.level-button {
+  background-color: $level-list-color;
+  color: $bg-color;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  &.expanded {
+    background-color: $level-list-expand;
+  }
+  .arrow-icon {
+    margin-left: 10px;
+  }
+}
+
+.level-list {
+  display: flex;
+  flex-direction: column;
+  .level {
+    background-color: $font-color;
+    font-size: 14px;
+    color: $bg-color;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 20px;
+    margin: 5px 0;
+    &:hover {
+      background-color: $level-list-color;
+    }
+  }
+}
+
+.links {
+  text-decoration: none;
+  color: $font-color;
+}

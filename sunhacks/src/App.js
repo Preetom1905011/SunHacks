@@ -1,10 +1,23 @@
 import FlowNode from "./components/FlowNode";
+import Levels from "./pages/Levels";
+import Login from "./pages/Login";
+import Codespace from "./pages/Codespace";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 function App() {
   return (
-    <div>
-      <FlowNode/>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/levels" element={<Levels />} />
+        <Route path="/codespace" element={<Codespace />} />
+      </Routes>
+    </BrowserRouter>
+    // <div>
+    //   <Login></Login>
+    //   {/* <FlowNode></FlowNode> */}
+    //   {/* <Levels></Levels> */}
+    // </div>
   );
 }
 

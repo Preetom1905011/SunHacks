@@ -48,17 +48,20 @@ function getOctokit(req) {
     auth: req.user.accessToken,
   });
 }
-app.get('/get-username', (req, res) => {
+app.get("/get-username", (req, res) => {
   const octokit = getOctokit(req);
 
-  octokit.rest.users.getAuthenticated()
-    .then(response => {
-      console.log("userName sent")
-      res.send(`Your GitHub username is ${response.data.login}`);
+  octokit.rest.users
+    .getAuthenticated()
+    .then((response) => {
+      // console.log("userName sent");
+      res.status(200);
+      // res.send(response.data.login);
+      res.redirect('http://localhost:3000/levels')
     })
-    .catch(error => {
+    .catch((error) => {
       console.error(error);
-      res.status(500).send('Failed to retrieve GitHub username');
+      res.status(500).send("Failed to retrieve GitHub username");
     });
 });
 
@@ -85,3 +88,4 @@ app.get('/auth/github/callback',
   });
 
 module.exports = app;
+
