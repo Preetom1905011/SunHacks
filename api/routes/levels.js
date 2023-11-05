@@ -37,6 +37,20 @@ router.get('/', async (req, res) => {
   res.json(levels)
 })
 
+router.delete('/delete', async (req, res) => {
+  const octokit = getOctokit(req)
+  try {
+    const { id } = req.query;
+    await octokit.request('DELETE /user/codespaces/{id}', {
+        codespace_id: id
+    });
+    res.send('Codespace deleted successfully');
+} catch (error) {
+    console.error(error);
+    res.status(500).send('An error occurred');
+}
+})
+
 router.get('/create-codespace', (req, res) => {
   
   const octokit = new Octokit({
@@ -53,7 +67,7 @@ router.get('/create-codespace', (req, res) => {
   octokit.rest.codespaces.createWithRepoForAuthenticatedUser(
     levels[query.level].template
   ).then(response => {
-    res.json(response.data.web_url)
+    res.json(response.data)
   })
 });
 

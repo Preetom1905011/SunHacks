@@ -7,6 +7,7 @@ export default function Codespace() {
     const { level_id, diff, userName, owner, repo} = location.state;
 
     const [embedURL, setEmbedURL] = useState(null);
+    const [cs_id, setCs_id] = useState(null);
 
     useEffect(() => {
       const generateCodespace = async () => {
@@ -20,8 +21,9 @@ export default function Codespace() {
   
           const data = await response.json(); // Await the JSON parsing
           console.log("URL from the response:", data);
-          setEmbedURL(data)
-          window.open(data, '_blank', 'noreferrer')
+          setEmbedURL(data.web_url)
+          setCs_id(data.id)
+          window.open(data.web_url, '_blank', 'noreferrer')
   
           // Now you can work with the 'data' object
         } catch (error) {
@@ -31,6 +33,23 @@ export default function Codespace() {
       };
       generateCodespace();
     }, []);
+
+    const handleDelete = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/levels/delete?id=${cs_id}`, {
+          credentials: 'include'
+        });
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json(); // Await the JSON parsing
+        // Now you can work with the 'data' object
+      } catch (error) {
+        // Handle errors here
+        console.error("Fetch error:", error);
+      }
+    }
   return (
     <div>
         <div className='topbar'>
@@ -41,7 +60,9 @@ export default function Codespace() {
           {/* ( embedURL?
             {/* <iframe src={embedURL} className='embed'></iframe>
              */}
+             <button onClick={handleDelete} style={{'width': '5rem'}}>Delete Codespace</button>
         </div>
+
     </div>
   )
 }
