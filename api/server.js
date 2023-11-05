@@ -17,10 +17,17 @@ passport.deserializeUser((obj, done) => {
   done(null, obj);
 });
 
+const corsOptions = {
+  origin: 'http://localhost:3000',  // replace with your frontend application's URL
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
+
 passport.use(new GitHubStrategy({
   clientID: process.env.GITHUB_CLIENT_ID,
   clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  callbackURL: "http://127.0.0.1:5000/auth/github/callback"
+  callbackURL: "http://learngit.courses/auth/github/callback"
 },
 (accessToken, refreshToken, profile, done) => {
   profile.accessToken = accessToken;  // Store the access token
@@ -29,6 +36,7 @@ passport.use(new GitHubStrategy({
 ));
 
 // Set up session management using the secret from the .env file
+app.use(cors(corsOptions));
 app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
 
 // Initialize Passport
@@ -75,6 +83,6 @@ app.get('/auth/github/callback',
     res.redirect('/get-username');
   });
 
-app.listen(5000, () => {
-    console.log('App listening on http://localhost:5000');
+app.listen(8080, () => {
+    console.log('App listening on http://learngit.courses');
 });
