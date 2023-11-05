@@ -21,6 +21,7 @@ export default function Codespace() {
           const data = await response.json(); // Await the JSON parsing
           console.log("URL from the response:", data);
           setEmbedURL(data)
+          window.open(data, '_blank', 'noreferrer')
   
           // Now you can work with the 'data' object
         } catch (error) {
@@ -37,9 +38,9 @@ export default function Codespace() {
             <Link to={`/levels/login-success?username=${userName}`} className='login-button links back-bt'>Back</Link>
         </div>
         <div className='codespace-view'>
-          ( embedURL &&
-            <iframe src={embedURL} className='embed'></iframe>
-          )
+          {/* ( embedURL?
+            {/* <iframe src={embedURL} className='embed'></iframe>
+             */}
         </div>
     </div>
   )
