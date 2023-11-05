@@ -11,22 +11,12 @@ export default function Levels() {
   const [hardExpanded, setHardExpanded] = useState(false);
   const levels = [1, 2, 3];
 
-  // useEffect(() => {
-  //   // Fetch the userName from the session
-  //   console.log("Test")
-  //   const fetchUserName = async () => {
-  //     await fetch("/get-user-name", { credentials: "include" })
-  //       .then((response) => response.json())
-  //       .then((data) => {
-  //         setUserName(data.userName);
-  //       })
-  //       .catch((error) => {
-  //         setUserName(null);
-  //         console.error(error);
-  //       });
-  //   };
-  //   fetchUserName();
-  // }, []);
+  useEffect(() => {
+    // Fetch the userName from the session
+    const urlParams = new URLSearchParams(window.location.search);
+    setUserName(urlParams.get('username'))
+    console.log(urlParams.get('username'))
+  }, []);
 
   // Function to handle expanding/collapsing a section
   const toggleExpansion = (section) => {
@@ -51,10 +41,11 @@ export default function Levels() {
     }
   };
   return (
+    ( userName?
     <div className="levels">
       <header className="header">
-        <Link className="login-button top-right links" to="/login">
-          Log out
+        <Link className="login-button top-right links" to="/">
+        {userName} Log out
         </Link>
       </header>
       <h1>Welcome to GitLearning</h1>
@@ -72,7 +63,7 @@ export default function Levels() {
               <Link
                 key={level}
                 to={"/codespace"}
-                state={{ id: level, diff: "Easy" }}
+                state={{ id: level, diff: "Easy", userName: userName}}
                 className="level links"
               >
                 Level {level}
@@ -94,7 +85,7 @@ export default function Levels() {
               <Link
                 key={level}
                 to={"/codespace"}
-                state={{ id: level, diff: "Intermediate" }}
+                state={{ id: level, diff: "Intermediate", userName: userName }}
                 className="level links"
               >
                 Level {level}
@@ -116,7 +107,7 @@ export default function Levels() {
               <Link
                 key={level}
                 to={"/codespace"}
-                state={{ id: level, diff: "Hard" }}
+                state={{ id: level, diff: "Hard", userName: userName}}
                 className="level links"
               >
                 Level {level}
@@ -126,5 +117,7 @@ export default function Levels() {
         )}
       </main>
     </div>
+    : <div className="error">Session Expired</div>
+    )
   );
 }

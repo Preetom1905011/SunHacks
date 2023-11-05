@@ -9,7 +9,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/levels" element={<Levels />} />
+        <Route path="/levels/login-success" element={<Levels />} />
         <Route path="/codespace" element={<Codespace />} />
       </Routes>
     </BrowserRouter>

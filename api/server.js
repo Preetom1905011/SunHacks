@@ -1,7 +1,7 @@
 require('dotenv').config();
 const app = require('./app');
 
-if (process.env.BACKEND_URL != 'http://127.0.0.1') {
+if (process.env.BACKEND_URL != 'http://localhost') {
     require("greenlock-express")
         .init({
             packageRoot: __dirname,
