@@ -20,6 +20,7 @@ export default function Codespace() {
   
           const data = await response.json(); // Await the JSON parsing
           console.log("URL from the response:", data);
+          setEmbedURL(data)
   
           // Now you can work with the 'data' object
         } catch (error) {
@@ -37,7 +38,7 @@ export default function Codespace() {
         </div>
         <div className='codespace-view'>
           ( embedURL &&
-            {/* <iframe src={embedURL} className='embed'></iframe> */}
+            <iframe src={embedURL} className='embed'></iframe>
           )
         </div>
     </div>
