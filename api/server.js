@@ -7,6 +7,7 @@ const { Octokit } = require('octokit')
 const cors = require('cors');
 
 const app = express();
+app.use(cors());
 
 var GitHubStrategy = require('passport-github').Strategy;
 
@@ -28,7 +29,7 @@ const corsOptions = {
 passport.use(new GitHubStrategy({
   clientID: process.env.GITHUB_CLIENT_ID,
   clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  callbackURL: "http://learngit.courses/auth/github/callback"
+  callbackURL: "http://127.0.0.1:8080/auth/github/callback"
 },
 (accessToken, refreshToken, profile, done) => {
   profile.accessToken = accessToken;  // Store the access token
@@ -37,7 +38,7 @@ passport.use(new GitHubStrategy({
 ));
 
 // Set up session management using the secret from the .env file
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
 
 // Initialize Passport
@@ -54,6 +55,7 @@ app.get('/get-username', (req, res) => {
 
   octokit.rest.users.getAuthenticated()
     .then(response => {
+      console.log("userName sent")
       res.send(`Your GitHub username is ${response.data.login}`);
     })
     .catch(error => {
@@ -85,5 +87,5 @@ app.get('/auth/github/callback',
   });
 
 app.listen(8080, () => {
-    console.log('App listening on http://learngit.courses');
+    console.log('App listening on http://localhost:8080');
 });
