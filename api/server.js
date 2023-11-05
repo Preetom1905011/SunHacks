@@ -30,7 +30,7 @@ app.use(cors(corsOptions));
 passport.use(new GitHubStrategy({
   clientID: process.env.GITHUB_CLIENT_ID,
   clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  callbackURL: "http://127.0.0.1:8080/auth/github/callback"
+  callbackURL: process.env.BACKEND_URL +"/auth/github/callback"
 },
 (accessToken, refreshToken, profile, done) => {
   profile.accessToken = accessToken;  // Store the access token
@@ -39,7 +39,6 @@ passport.use(new GitHubStrategy({
 ));
 
 // Set up session management using the secret from the .env file
-// app.use(cors(corsOptions));
 app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: false }));
 
 // Initialize Passport
@@ -88,5 +87,5 @@ app.get('/auth/github/callback',
   });
 
 app.listen(8080, () => {
-    console.log('App listening on http://localhost:8080');
+    console.log('App listening on ' + process.env.BACKEND_URL);
 });
