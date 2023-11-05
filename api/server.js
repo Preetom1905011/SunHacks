@@ -7,7 +7,6 @@ const { Octokit } = require('octokit')
 const cors = require('cors');
 
 const app = express();
-app.use(cors());
 
 var GitHubStrategy = require('passport-github').Strategy;
 
@@ -25,6 +24,8 @@ const corsOptions = {
   credentials: true,
   optionsSuccessStatus: 204,
 };
+
+app.use(cors(corsOptions));
 
 passport.use(new GitHubStrategy({
   clientID: process.env.GITHUB_CLIENT_ID,
