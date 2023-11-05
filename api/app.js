@@ -1,19 +1,12 @@
 const express = require('express');
 const session = require('express-session');
 const { createNodeMiddleware } = require("@octokit/webhooks");
-const { Webhooks } = require("@octokit/webhooks");
-// const { Octokit } = require('@octokit/rest')
-// const { Webhooks } = require("@octokit/webhooks");
-// const { createNodeMiddleware } = require("@octokit/webhooks");
 const cors = require('cors');
 const passport = require('passport');
 
 const app = express();
 
-const webhooks = new Webhooks({
-  secret: process.env.WEBHOOK_SECRET,
-});
-
+const webhooks = require('./routes/webhookInstance');
 
 const corsOptions = {
     origin: 'http://localhost:3000', 
@@ -60,7 +53,7 @@ app.use('/auth', auth);
 app.use('/levels', levels);
 
 
-app.use('/webhook', webhook)
+app.use('/webhook', webhook);
 app.use(createNodeMiddleware(webhooks, { path: '/webhook' }));
 
 module.exports = app;

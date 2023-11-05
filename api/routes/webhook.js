@@ -1,13 +1,9 @@
 const { Octokit } = require('@octokit/rest')
-const { Webhooks } = require("@octokit/webhooks");
-
 
 const express = require('express');
 const router = express.Router()
 
-const webhooks = new Webhooks({
-  secret: process.env.WEBHOOK_SECRET,
-});
+const webhooks = require('./webhookInstance');
 
 function getOctokit(req) {
   return new Octokit({
@@ -70,6 +66,4 @@ router.get( '/' , async(req, res) => {
   }
 });
 
-// router.use(createNodeMiddleware(webhooks, { path: '/webhook' }));
-
-module.exports = router
+module.exports = router;
