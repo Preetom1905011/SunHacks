@@ -5,7 +5,7 @@ export default function Login() {
 
   const handleOAuth = async () => {
     console.log("Sent request")
-    window.location.href = 'http://localhost:8080/auth/github';
+    window.location.href = 'http://learngit.courses/auth/github';
   }
 
   return (

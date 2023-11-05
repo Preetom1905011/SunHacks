@@ -32,7 +32,8 @@ const levels = {
   }
 }
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
+  console.log(">>>>", levels)
   res.send(levels)
 })
 

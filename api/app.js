@@ -51,8 +51,6 @@ const webhook = require('./routes/webhook')
 
 app.use('/auth', auth);
 app.use('/levels', levels);
-
-
 app.use('/webhook', webhook);
 app.use(createNodeMiddleware(webhooks, { path: '/webhook' }));
 

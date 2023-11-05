@@ -9,12 +9,32 @@ export default function Levels() {
   const [easyExpanded, setEasyExpanded] = useState(false);
   const [intermediateExpanded, setIntermediateExpanded] = useState(false);
   const [hardExpanded, setHardExpanded] = useState(false);
-  const levels = [1, 2, 3];
+  const [levels, setLevels] = useState([1,2,3]);
 
   useEffect(() => {
     // Fetch the userName from the session
     const urlParams = new URLSearchParams(window.location.search);
     setUserName(urlParams.get('username'))
+
+    const fetchLevels = async () => {
+      await fetch('https://learngit.courses/levels/')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        console.log("==>", response); // You may need to use .text() or another method depending on the response content.
+      })
+      .then(data => {
+        // Handle the data from the response here
+        console.log("=========>",data);
+      })
+      .catch(error => {
+        // Handle errors here
+        console.error('Fetch error:', error);
+      });
+    }
+    fetchLevels();
   }, []);
 
   // Function to handle expanding/collapsing a section
