@@ -2,3 +2,5 @@
 api/node_modules/
 sunhacks/node_modules/
 api/.env
+greenlock.d/
+.greenlockrc
